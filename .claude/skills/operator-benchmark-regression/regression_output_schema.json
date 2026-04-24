@@ -1,0 +1,187 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Operator Benchmark Regression Analysis Output",
+  "description": "Structured output from Claude operator benchmark regression analysis",
+  "type": "object",
+  "required": [
+    "pr_number",
+    "analysis_timestamp",
+    "overall_result",
+    "summary",
+    "recommendation",
+    "rationale"
+  ],
+  "properties": {
+    "pr_number": {
+      "type": "integer",
+      "description": "Pull request number"
+    },
+    "analysis_timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of when analysis was performed"
+    },
+    "benchmark_run_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL to the benchmark workflow run"
+    },
+    "overall_result": {
+      "type": "string",
+      "enum": ["regression_detected", "no_regression", "improvement", "inconclusive"],
+      "description": "Overall result of the regression analysis"
+    },
+    "summary": {
+      "type": "object",
+      "required": [
+        "total_operators_tested",
+        "regressions_detected",
+        "improvements_detected"
+      ],
+      "properties": {
+        "total_operators_tested": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "regressions_detected": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "improvements_detected": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "critical_regressions": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "high_regressions": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "medium_regressions": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "low_regressions": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "regressions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "operator",
+          "severity",
+          "baseline_time_us",
+          "current_time_us",
+          "percent_change"
+        ],
+        "properties": {
+          "operator": {
+            "type": "string",
+            "description": "Operator name (e.g., torch.matmul)"
+          },
+          "config": {
+            "type": "string",
+            "description": "Configuration string (shape, dtype, device)"
+          },
+          "severity": {
+            "type": "string",
+            "enum": ["critical", "high", "medium", "low"]
+          },
+          "baseline_time_us": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Baseline execution time in microseconds"
+          },
+          "current_time_us": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Current execution time in microseconds"
+          },
+          "percent_change": {
+            "type": "number",
+            "description": "Percentage change (positive = regression, negative = improvement)"
+          },
+          "impact_level": {
+            "type": "string",
+            "enum": ["critical", "high", "medium", "low"],
+            "description": "Impact level based on operator importance"
+          },
+          "potential_cause": {
+            "type": "string",
+            "description": "Potential cause of the regression based on PR changes"
+          },
+          "device": {
+            "type": "string",
+            "enum": ["cpu", "cuda", "rocm"],
+            "description": "Device where regression was detected"
+          }
+        }
+      }
+    },
+    "improvements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "operator",
+          "baseline_time_us",
+          "current_time_us",
+          "percent_change"
+        ],
+        "properties": {
+          "operator": {
+            "type": "string"
+          },
+          "config": {
+            "type": "string"
+          },
+          "baseline_time_us": {
+            "type": "number",
+            "minimum": 0
+          },
+          "current_time_us": {
+            "type": "number",
+            "minimum": 0
+          },
+          "percent_change": {
+            "type": "number",
+            "description": "Negative value indicates improvement"
+          },
+          "device": {
+            "type": "string",
+            "enum": ["cpu", "cuda", "rocm"]
+          }
+        }
+      }
+    },
+    "recommendation": {
+      "type": "string",
+      "enum": ["block_merge", "require_investigation", "approve_with_note", "approve"],
+      "description": "Recommendation for PR merge decision"
+    },
+    "rationale": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 1000,
+      "description": "Explanation (2-3 sentences) of the analysis and recommendation"
+    },
+    "baseline_source": {
+      "type": "string",
+      "description": "Source of baseline data used for comparison"
+    },
+    "partial_analysis": {
+      "type": "boolean",
+      "description": "Set to true if analysis was incomplete"
+    },
+    "error": {
+      "type": "string",
+      "description": "Error message if analysis failed"
+    }
+  }
+}

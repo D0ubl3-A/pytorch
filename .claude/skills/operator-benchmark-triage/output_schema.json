@@ -1,0 +1,108 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Operator Benchmark Triage Output",
+  "description": "Structured output from Claude operator benchmark triage analysis",
+  "type": "object",
+  "required": [
+    "pr_number",
+    "analysis_timestamp",
+    "regression_risk",
+    "benchmark_scope",
+    "devices",
+    "priority_level",
+    "rationale"
+  ],
+  "properties": {
+    "pr_number": {
+      "type": "integer",
+      "description": "Pull request number"
+    },
+    "analysis_timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of when analysis was performed"
+    },
+    "regression_risk": {
+      "type": "string",
+      "enum": ["high", "medium", "low", "minimal"],
+      "description": "Risk level of performance regression"
+    },
+    "benchmark_scope": {
+      "type": "string",
+      "enum": ["targeted", "short", "long", "full", "none"],
+      "description": "Scope of benchmarks to run"
+    },
+    "targeted_benchmarks": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of specific benchmark test names to run (required if scope is 'targeted')"
+    },
+    "devices": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["cpu", "cuda", "rocm"]
+      },
+      "minItems": 1,
+      "description": "List of devices to run benchmarks on"
+    },
+    "priority_level": {
+      "type": "string",
+      "enum": ["critical", "high", "medium", "low"],
+      "description": "Priority level for benchmark execution"
+    },
+    "rationale": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 500,
+      "description": "Brief explanation (1-3 sentences) of why these benchmarks were selected"
+    },
+    "affected_categories": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of affected operator categories"
+    },
+    "changed_files_summary": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "functional_changes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "test_only": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "documentation_only": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "partial_analysis": {
+      "type": "boolean",
+      "description": "Set to true if analysis was incomplete due to timeout or other issues"
+    },
+    "error": {
+      "type": "string",
+      "description": "Error message if analysis failed"
+    },
+    "estimated_completion_time": {
+      "type": "string",
+      "description": "Human-readable estimate of benchmark completion time"
+    },
+    "trigger_ci_tag": {
+      "type": "string",
+      "pattern": "^ciflow/op-benchmark/.*",
+      "description": "CI tag to trigger for this benchmark run"
+    }
+  }
+}

@@ -1,0 +1,81 @@
+name: Claude Operator Benchmark Triage
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'aten/src/ATen/**'
+      - 'torch/**'
+      - 'c10/**'
+      - 'benchmarks/operator_benchmark/**'
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "PR number to analyze (for manual runs)"
+        type: string
+        required: false
+
+jobs:
+  capture-pr:
+    if: github.repository == 'pytorch/pytorch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Validate and capture PR number
+        run: |
+          PR_NUM="${{ inputs.pr_number || github.event.pull_request.number }}"
+          if [ -z "$PR_NUM" ]; then
+            echo "::error::PR number is required. For manual runs, provide the pr_number input."
+            exit 1
+          fi
+          if [ -n "${{ inputs.pr_number }}" ] && ! [[ "$PR_NUM" =~ ^[0-9]+$ ]]; then
+            echo "::error::Invalid PR number format: '$PR_NUM'. Must be a positive integer."
+            exit 1
+          fi
+          echo "Capturing PR #${PR_NUM} for operator benchmark triage"
+          echo "$PR_NUM" > pr_number.txt
+
+      - name: Upload PR number artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: operator-benchmark-triage-data
+          path: pr_number.txt
+          retention-days: 1
+          if-no-files-found: error
+
+      - name: Post comment to PR
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          gh pr comment "$PR_NUMBER" --repo "$REPO" --body "## :microscope: Operator Benchmark Triage Available
+
+          This PR modifies operator code that may impact performance. You can run an automated analysis to determine which benchmarks should be tested.
+
+          **To analyze this PR:**
+          1. Go to [Actions → Claude Operator Benchmark Triage Run](https://github.com/$REPO/actions/workflows/claude-operator-benchmark-triage-run.yml)
+          2. Click \"Run workflow\"
+          3. Enter PR number: \`$PR_NUMBER\`
+          4. Click \"Run workflow\"
+
+          The analysis will:
+          - Examine your code changes
+          - Map them to relevant operator benchmarks
+          - Recommend which benchmarks to run (targeted/short/long/full)
+          - Estimate performance regression risk
+          - Post a detailed analysis comment
+
+          **Or use the CLI:**
+          \`\`\`bash
+          gh workflow run claude-operator-benchmark-triage-run.yml -f pr_number=$PR_NUMBER
+          \`\`\`
+
+          ---
+          :robot: *Automated notification from [run #$RUN_ID](https://github.com/$REPO/actions/runs/$RUN_ID)*"

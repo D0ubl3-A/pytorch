@@ -1,0 +1,426 @@
+{
+  "description": "Mapping of code paths/patterns to operator benchmark tests",
+  "version": "1.0",
+  "last_updated": "2026-04-24",
+  "categories": {
+    "linear_algebra": {
+      "description": "Matrix operations including matmul, mm, bmm, addmm",
+      "file_patterns": [
+        "*matmul*",
+        "*LinearAlgebra*",
+        "*blas*",
+        "*gemm*",
+        "aten/src/ATen/native/cpu/BlasKernel.cpp",
+        "aten/src/ATen/native/cuda/Blas.cpp"
+      ],
+      "benchmarks": [
+        "matmul_test.py",
+        "mm_test.py",
+        "bmm_test.py",
+        "addmm_test.py",
+        "scaled_mm_test.py",
+        "scaled_grouped_mm_test.py"
+      ],
+      "priority": "critical"
+    },
+    "convolution": {
+      "description": "Convolution operations",
+      "file_patterns": [
+        "*conv*.cpp",
+        "*Conv*.cpp",
+        "aten/src/ATen/native/Convolution.cpp",
+        "aten/src/ATen/native/ConvolutionMM2d.cpp",
+        "aten/src/ATen/native/cudnn/Conv*.cpp"
+      ],
+      "benchmarks": [
+        "conv_test.py"
+      ],
+      "priority": "critical"
+    },
+    "normalization": {
+      "description": "Normalization layers including batch norm, layer norm, group norm",
+      "file_patterns": [
+        "*norm*.cpp",
+        "*Norm*.cpp",
+        "*Normalization*"
+      ],
+      "benchmarks": [
+        "batchnorm_test.py",
+        "layernorm_test.py",
+        "groupnorm_test.py",
+        "instancenorm_test.py"
+      ],
+      "priority": "high"
+    },
+    "activation": {
+      "description": "Activation functions including relu, gelu, sigmoid, tanh",
+      "file_patterns": [
+        "*activation*.cpp",
+        "*Activation*",
+        "*relu*",
+        "*gelu*",
+        "*sigmoid*",
+        "*tanh*",
+        "*silu*",
+        "*swish*"
+      ],
+      "benchmarks": [
+        "activation_test.py",
+        "gelu_test.py",
+        "hardsigmoid_test.py",
+        "hardswish_test.py",
+        "softmax_test.py"
+      ],
+      "priority": "high"
+    },
+    "quantization": {
+      "description": "Quantization operations and kernels",
+      "file_patterns": [
+        "torch/ao/quantization/*",
+        "aten/src/ATen/native/quantized/*",
+        "*quantize*",
+        "*Quantize*"
+      ],
+      "benchmarks": [
+        "qactivation_test.py",
+        "qcat_test.py",
+        "qcomparators_test.py",
+        "qconv_test.py",
+        "qembedding_bag_lookups_test.py",
+        "qembedding_pack_test.py",
+        "qembeddingbag_test.py",
+        "qgroupnorm_test.py",
+        "qinstancenorm_test.py",
+        "qinterpolate_test.py",
+        "qlayernorm_test.py",
+        "qlinear_test.py",
+        "qobserver_test.py",
+        "qpool_test.py",
+        "qrnn_test.py",
+        "qtensor_method_test.py",
+        "quantization_test.py",
+        "qunary_test.py"
+      ],
+      "priority": "high"
+    },
+    "memory_ops": {
+      "description": "Memory operations including cat, stack, chunk, split",
+      "file_patterns": [
+        "*cat*.cpp",
+        "*stack*.cpp",
+        "*chunk*.cpp",
+        "*split*.cpp",
+        "aten/src/ATen/native/TensorShape.cpp"
+      ],
+      "benchmarks": [
+        "cat_test.py",
+        "stack_test.py",
+        "chunk_test.py",
+        "split_test.py"
+      ],
+      "priority": "medium"
+    },
+    "indexing": {
+      "description": "Indexing and gathering operations",
+      "file_patterns": [
+        "*index*.cpp",
+        "*Index*.cpp",
+        "*gather*.cpp",
+        "*Gather*",
+        "aten/src/ATen/native/Indexing.cpp"
+      ],
+      "benchmarks": [
+        "index_add__test.py",
+        "index_select_test.py",
+        "gather_test.py"
+      ],
+      "priority": "medium"
+    },
+    "reduction": {
+      "description": "Reduction operations including sum, mean, topk",
+      "file_patterns": [
+        "*Reduce*.cpp",
+        "*sum*.cpp",
+        "*mean*.cpp",
+        "*topk*"
+      ],
+      "benchmarks": [
+        "sum_test.py",
+        "topk_test.py"
+      ],
+      "priority": "medium"
+    },
+    "binary_ops": {
+      "description": "Binary element-wise operations",
+      "file_patterns": [
+        "*BinaryOps*",
+        "aten/src/ATen/native/BinaryOps.cpp"
+      ],
+      "benchmarks": [
+        "add_test.py",
+        "binary_test.py",
+        "binary_inplace_test.py",
+        "remainder_test.py"
+      ],
+      "priority": "medium"
+    },
+    "unary_ops": {
+      "description": "Unary element-wise operations",
+      "file_patterns": [
+        "*UnaryOps*",
+        "aten/src/ATen/native/UnaryOps.cpp"
+      ],
+      "benchmarks": [
+        "unary_test.py"
+      ],
+      "priority": "medium"
+    },
+    "pooling": {
+      "description": "Pooling operations",
+      "file_patterns": [
+        "*pool*.cpp",
+        "*Pool*.cpp",
+        "*pooling*"
+      ],
+      "benchmarks": [
+        "pool_test.py"
+      ],
+      "priority": "high"
+    },
+    "embedding": {
+      "description": "Embedding operations",
+      "file_patterns": [
+        "*embedding*",
+        "*Embedding*"
+      ],
+      "benchmarks": [
+        "embeddingbag_test.py"
+      ],
+      "priority": "medium"
+    },
+    "linear": {
+      "description": "Linear/fully connected layers",
+      "file_patterns": [
+        "*linear*.cpp",
+        "*Linear*.cpp",
+        "torch/nn/modules/linear.py"
+      ],
+      "benchmarks": [
+        "linear_test.py",
+        "matmul_test.py",
+        "mm_test.py"
+      ],
+      "priority": "critical"
+    },
+    "attention": {
+      "description": "Attention mechanisms including SDPA",
+      "file_patterns": [
+        "*attention*",
+        "*Attention*",
+        "*sdpa*",
+        "*SDPA*"
+      ],
+      "benchmarks": [
+        "attention_test.py",
+        "mul_test.py"
+      ],
+      "priority": "critical"
+    },
+    "rnn": {
+      "description": "RNN, LSTM, GRU operations",
+      "file_patterns": [
+        "*rnn*",
+        "*RNN*",
+        "*lstm*",
+        "*LSTM*",
+        "*gru*",
+        "*GRU*"
+      ],
+      "benchmarks": [
+        "lstm_test.py",
+        "rnn_test.py"
+      ],
+      "priority": "high"
+    },
+    "sparse": {
+      "description": "Sparse tensor operations",
+      "file_patterns": [
+        "*sparse*",
+        "*Sparse*",
+        "torch/ao/pruning/*"
+      ],
+      "benchmarks": [
+        "ao_sparsifier_test.py"
+      ],
+      "priority": "medium"
+    },
+    "interpolate": {
+      "description": "Interpolation and resizing operations",
+      "file_patterns": [
+        "*interpolate*",
+        "*Interpolate*",
+        "*upsample*",
+        "*UpSample*"
+      ],
+      "benchmarks": [
+        "interpolate_test.py"
+      ],
+      "priority": "medium"
+    }
+  },
+  "specific_operators": {
+    "torch.add": ["add_test.py", "binary_test.py"],
+    "torch.matmul": ["matmul_test.py"],
+    "torch.mm": ["mm_test.py"],
+    "torch.bmm": ["bmm_test.py"],
+    "torch.addmm": ["addmm_test.py"],
+    "torch.conv2d": ["conv_test.py"],
+    "torch.batch_norm": ["batchnorm_test.py"],
+    "torch.layer_norm": ["layernorm_test.py"],
+    "torch.group_norm": ["groupnorm_test.py"],
+    "torch.relu": ["activation_test.py"],
+    "torch.gelu": ["gelu_test.py"],
+    "torch.sigmoid": ["activation_test.py"],
+    "torch.softmax": ["softmax_test.py"],
+    "torch.cat": ["cat_test.py"],
+    "torch.stack": ["stack_test.py"],
+    "torch.gather": ["gather_test.py"],
+    "torch.index_select": ["index_select_test.py"],
+    "torch.sum": ["sum_test.py"],
+    "torch.topk": ["topk_test.py"],
+    "torch.embedding": ["embeddingbag_test.py"],
+    "torch.nn.Linear": ["linear_test.py", "matmul_test.py"],
+    "F.scaled_dot_product_attention": ["attention_test.py"]
+  },
+  "infrastructure": {
+    "dispatcher": {
+      "description": "ATen dispatcher and operator registration",
+      "file_patterns": [
+        "aten/src/ATen/core/*",
+        "*Dispatch*",
+        "*dispatch*",
+        "*Registry*"
+      ],
+      "benchmarks": "all_short",
+      "priority": "critical",
+      "rationale": "Dispatcher changes affect all operators"
+    },
+    "autograd": {
+      "description": "Automatic differentiation engine",
+      "file_patterns": [
+        "torch/csrc/autograd/*",
+        "*Autograd*",
+        "*autograd*"
+      ],
+      "benchmarks": "all_short",
+      "priority": "high",
+      "rationale": "Autograd changes can affect all differentiable operations"
+    },
+    "jit": {
+      "description": "TorchScript JIT compiler",
+      "file_patterns": [
+        "torch/csrc/jit/*",
+        "*jit/*"
+      ],
+      "benchmarks": "all_short",
+      "priority": "medium",
+      "rationale": "JIT changes may affect operator performance in traced/scripted models"
+    },
+    "cuda_backend": {
+      "description": "CUDA backend infrastructure",
+      "file_patterns": [
+        "c10/cuda/*",
+        "aten/src/ATen/cuda/CUDAContext*",
+        "aten/src/ATen/cuda/CUDABlas*"
+      ],
+      "benchmarks": "cuda_benchmarks",
+      "priority": "high",
+      "rationale": "CUDA backend changes affect all GPU operators"
+    },
+    "cpu_backend": {
+      "description": "CPU backend infrastructure",
+      "file_patterns": [
+        "aten/src/ATen/native/cpu/*",
+        "aten/src/ATen/cpu/*"
+      ],
+      "benchmarks": "cpu_benchmarks",
+      "priority": "high",
+      "rationale": "CPU backend changes affect all CPU operators"
+    }
+  },
+  "exclusions": {
+    "documentation": {
+      "file_patterns": [
+        "*.md",
+        "*.rst",
+        "docs/*"
+      ],
+      "benchmarks": "none",
+      "rationale": "Documentation changes do not affect performance"
+    },
+    "tests": {
+      "file_patterns": [
+        "test/*",
+        "*_test.py"
+      ],
+      "benchmarks": "none",
+      "rationale": "Test-only changes do not affect runtime performance",
+      "exceptions": [
+        "benchmarks/operator_benchmark/*"
+      ]
+    },
+    "ci_configs": {
+      "file_patterns": [
+        ".github/workflows/*",
+        ".ci/*",
+        "*.yml",
+        "*.yaml"
+      ],
+      "benchmarks": "none",
+      "rationale": "CI configuration changes do not affect operator performance",
+      "exceptions": [
+        "Build configuration changes that affect optimization flags"
+      ]
+    },
+    "tooling": {
+      "file_patterns": [
+        "tools/*",
+        "scripts/*"
+      ],
+      "benchmarks": "none",
+      "rationale": "Tooling changes do not affect runtime performance",
+      "exceptions": [
+        "Codegen changes that affect generated kernels"
+      ]
+    }
+  },
+  "benchmark_scopes": {
+    "none": {
+      "description": "No benchmarks needed",
+      "tag_filter": null,
+      "estimated_time": "0 minutes"
+    },
+    "targeted": {
+      "description": "Run specific benchmarks for affected operators only",
+      "tag_filter": "short",
+      "max_benchmarks": 10,
+      "estimated_time": "5-10 minutes per device"
+    },
+    "short": {
+      "description": "Run all short-tagged benchmarks (common operators)",
+      "tag_filter": "short",
+      "estimated_time": "15-30 minutes per device"
+    },
+    "long": {
+      "description": "Run all benchmarks including long-tagged tests",
+      "tag_filter": "all",
+      "estimated_time": "2-4 hours per device"
+    },
+    "full": {
+      "description": "Run comprehensive benchmarks across all devices",
+      "tag_filter": "all",
+      "devices": ["cpu_x86_64", "cpu_aarch64", "cuda_h100", "cuda_a100", "rocm_mi300"],
+      "estimated_time": "8-12 hours"
+    }
+  }
+}
